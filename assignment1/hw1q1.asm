@@ -61,57 +61,57 @@ main:
 		addi $s0, $s0, -1
 		bgtz $s0, loopconvert
 	
-	la $t0, ip # ip addr
-	la $t1, result # result addr
-	li $s0, 0 # carry
-	li $s1, 3 # i
-	li $s7, 3 # 3
+	la $t0, ip 
+	la $t1, result 
+	li $s0, 0 
+	li $s1, 3 
+	li $s7, 3 
 	loop1:
-		move $s2, $s0 # sum
-		li $s3, 0 # j
+		move $s2, $s0 
+		li $s3, 0
 		loop2:
 			sll $s4, $s3, 2
 			add $s4, $s4, $s1
-			add $s4, $s4, $t0 # index
-			lb $s5, ($s4) # ip[index]
+			add $s4, $s4, $t0 
+			lb $s5, ($s4)
 			add $s2, $s2, $s5
 			addi $s3, $s3, 1
 			blt $s3, 10, loop2
 			
 		sub $s6, $s7, $s1 
-		add $s6, $s6, $t1 # result[3-i]
-		andi $t3, $s2, 15 # sum % 16
+		add $s6, $s6, $t1 
+		andi $t3, $s2, 15 
 		sb $t3, ($s6)
 		srl $s0, $s2, 4
 		addi $s1, $s1, -1
 		bgez $s1, loop1
 	
-	la $t1, result # result addr
-	li $s1, 3 # i
-	li $s7, 3 # 3
+	la $t1, result 
+	li $s1, 3 
+	li $s7, 3 
 	loop3:
-		move $s2, $s0 # sum = carry
+		move $s2, $s0 
 		sub $s6, $s7, $s1 
-		add $s6, $s6, $t1 # result[3-i]
+		add $s6, $s6, $t1 
 		lb $t2, ($s6)
 		add $s2, $s2, $t2
-		andi $s3, $s2, 15 # sum % 16
+		andi $s3, $s2, 15 
 		
 		sb $s3, ($s6)
 		srl $s0, $s2, 4
 		addi $s1, $s1, -1
 		bgez $s1, loop3
 	
-	li $t0, 0 # sum
-	la $t1, result # result addr
-	li $t2, 0 # i
+	li $t0, 0 
+	la $t1, result
+	li $t2, 0 
 	li $s7, 15
 	loopprint:
 		add $t3, $t1, $t2
 		lb $t4, ($t3)
-		sub $t4, $s7, $t4 # result[i]
-		li $t5, 1 # base
-		li $t6, 0 # j
+		sub $t4, $s7, $t4 
+		li $t5, 1
+		li $t6, 0 
 		beq $t6, $t2, basebreak
 		loopbase:
 			sll $t5, $t5, 4
@@ -148,3 +148,58 @@ printhex:
 	syscall
 	jr $ra
  
+# #include "stdio.h"
+# #include "stdlib.h"
+# #include "string.h"
+# void hex_addition(int ip[], int result[]) {
+#     int carry = 0;
+#     for (int i = 3; i >= 0; i--) {
+#         int sum = carry;
+#         for (int j = 0; j < 10; j++) {
+#             sum += ip[j * 4 + i];
+#         }
+#         result[3-i] = sum % 16;
+#         carry = sum / 16;
+#     }
+#     for (int i = 3; i >= 0; i--) {
+#         int sum = carry;
+#         sum += result[3-i];
+#         result[3-i] = sum % 16;
+#         carry = sum / 16;
+#     }
+# }
+# int main()
+# {
+#     char buffer[40];
+#     int ip[40];
+#     scanf("%s", buffer);
+#     int result[4];
+#     memset(ip, 0, 40*sizeof(int));
+#     memset(result, 0, 4*sizeof(int));
+#     for (int i = 0; i < 40; i++)
+#     {
+#         char c = buffer[i];
+#         if (c > 96)
+#         {
+#             ip[i] = c - 87;
+#         }
+#         else
+#         {
+#             ip[i] = c - 48;
+#         }
+#     }
+#     hex_addition(ip, result);
+#     int sum = 0;
+#     for (int i = 0; i < 4; i++)
+#     {
+#         printf("%d ", result[i]);
+#         result[i] = 15 - result[i];
+#         int base = 1;
+#         for (int j = 0; j < i; j++)
+#         {
+#             base *= 16;
+#         }
+#         sum += (result[i] * base);
+#     }
+#     printf("%hx\n", sum);
+# }

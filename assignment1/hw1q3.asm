@@ -124,3 +124,65 @@ print_split:
 	print_string("-")
 	blt $s2, $t1, loopprint2
 	j break2
+
+# #include "stdio.h"
+# #include "stdlib.h"
+# #include "string.h"
+# int is_palindrome(char *s, int len)
+# {
+#     for (int i = 0; i < len / 2; i++)
+#     {
+#         if (s[i] != s[len - i - 1])
+#         {
+#             return 0;
+#         }
+#     }
+#     return 1;
+# }
+# int ascii[6];
+# char str[6];
+# char bstr[48];
+# int main()
+# {
+#     scanf("%s", str);
+#     int len = strlen(str);
+#     int index = 0;
+#     for (int j = 0; j < len; j++)
+#     {
+#         ascii[j] = (int)str[j];
+#         for (int k = 7; k >= 0; k--)
+#         {
+#             bstr[index++] = ((ascii[j] >> k) & 1) + '0';
+#         }
+#     }
+#     bstr[index] = '\0';
+#     int flag = is_palindrome(bstr, len * 8);
+#     if (flag)
+#     {
+#         printf("%s is a binary palindrome\n", str);
+#     }
+#     else
+#     {
+#         printf("%s is not a binary palindrome\n", str);
+#     }
+#     for (int j = 0; j < len; j++)
+#     {
+#         printf("%d", ascii[j]);
+#         if (j != len - 1)
+#         {
+#             printf("-");
+#         }
+#         else
+#         {
+#             printf("\n");
+#         }
+#     }
+#     for (int j = 0; j < 8 * len; j++)
+#     {
+#         printf("%c", bstr[j]);
+#         if ((j + 1) % 8 == 0 && j != 8 * len - 1)
+#             printf("-");
+#         else if (j == 8 * len - 1)
+#             printf("\n");
+#     }
+# }
